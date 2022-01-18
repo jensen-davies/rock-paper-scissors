@@ -10,54 +10,90 @@ function computerPlay() {
     return computerChoice.toLowerCase();
 }
 
-function playGame(playerChoice, computerChoice) {
+function playGame() {
 
     //Plays the actual game of "Rock Paper Scissors" versus the computer.
 
-    playerChoice = playerChoice.toLowerCase();
+    playerChoice = prompt("Choose your move!").toLowerCase();
     computerChoice = computerPlay();
+    let message = '';
+    let playerWin = false;
+    let gameTie = false;
 
     console.log(`You choose ${playerChoice} and I choose ${computerChoice}.`)
 
     switch (playerChoice) {
-
         //In this case, the player chooses rock.
         case 'rock':
             switch (computerChoice) {
                 case 'scissors':
-                    console.log("You win! Rock crushes Scissors!");
+                    message = "You win! Rock crushes Scissors!";
+                    playerWin = true;
                     break;
                 case 'paper':
-                    console.log("You lose! Paper envelopes Rock!");
+                    message = "You lose! Paper envelopes Rock!";
                     break;
                 case 'rock':
-                    console.log("Tie! We both chose Rock!");
+                    message = "Tie! We both chose Rock!";
+                    gameTie = true;
             }
             break;
         //In this case, the player chooses paper.
         case 'paper':
             switch (computerChoice) {
                 case 'scissors':
-                    console.log("You lose! Scissors cut through Paper!");
+                    message = "You lose! Scissors cut through Paper!";
                     break;
                 case 'paper':
-                    console.log("Tie! We both chose Paper.");
+                    message = "Tie! We both chose Paper.";
+                    gameTie = true;
                     break;
                 case 'rock':
-                    console.log("You win! Paper envelopes Rock!");
+                    message = "You win! Paper envelopes Rock!";
+                    playerWin = true;
             }
+            break;
         //In this case, the player chooses scissors.
         case 'scissors':
             switch (computerChoice) {
                 case 'scissors':
-                    console.log("Tie! We both chose Scissors.");
+                    message = "Tie! We both chose Scissors.";
+                    gameTie = true;
                     break;
                 case 'paper':
-                    console.log("You win! Scissors cut through Paper!");
+                    message = "You win! Scissors cut through Paper!";
+                    playerWin = true;
                     break;
                 case 'rock':
-                    console.log("You lose! Rock crushes Scissors!");
+                    message = "You lose! Rock crushes Scissors!";
             }
     }
+    return [message, playerWin, gameTie];
+}
+
+function game(n) {
+
+    let playerScore = 0;
+    let computerScore = 0;
+    console.log(`Playing Rock Paper Scissors ${n} times, and keeping score...`)
+
+    for (let i = 0; i < n; i++) {
+        //Play 1 game
+        gameInfo = playGame();
+        //Unpack gameInfo
+        const message = gameInfo[0];
+        const playerWin = gameInfo[1];
+        const gameTie = gameInfo[2];
+        //Print the results
+        console.log(message);
+        //Update scores
+        if (playerWin) {
+            playerScore++;
+        } else if (!gameTie) {
+            computerScore++;
+        }
+    }
+
+    console.log(`Out of ${n} plays, you won ${playerScore} of them. I won ${computerScore}. Thanks for playing!`);
 
 }
