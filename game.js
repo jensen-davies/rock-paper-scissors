@@ -1,8 +1,22 @@
 //Plays Rock Paper Scissors against the computer
+let playerScore = 0;
+let computerScore = 0;
+const playerOptions = document.querySelectorAll('#rock, #paper, #scissors');
+const playerScoreBoard = document.querySelector('#playerBoard');
+const computerScoreBoard = document.querySelector('#computerBoard');
+const gameDescription = document.querySelector('.description')
+const hands = document.querySelector('#playerHand')
+const resetButton = document.createElement('button');
 
+playerOptions.forEach(button => button.addEventListener('click', playerChoice));
+
+
+function playerChoice(e) {
+    const buttonChoice = this.id;
+    game(buttonChoice);
+}
 
 function computerPlay() {
-
     //Randomly chooses and returns the computers play, either "Rock", "Paper", or "Scissors".
 
     const handChoice = ['Rock', 'Paper', 'Scissors'];
@@ -10,31 +24,29 @@ function computerPlay() {
     return computerChoice.toLowerCase();
 }
 
-function playGame() {
-
+function playGame(buttonChoice) {
     //Plays the actual game of "Rock Paper Scissors" versus the computer.
 
-    playerChoice = prompt("Choose your move!").toLowerCase();
-    computerChoice = computerPlay();
-    let message = '';
+    const computerChoice = computerPlay();
+    const playerChoice = buttonChoice;
     let playerWin = false;
     let gameTie = false;
 
-    console.log(`You choose ${playerChoice} and I choose ${computerChoice}.`)
+    hands.textContent = `You choose ${playerChoice} and I choose ${computerChoice}.`;
 
     switch (playerChoice) {
         //In this case, the player chooses rock.
         case 'rock':
             switch (computerChoice) {
                 case 'scissors':
-                    message = "You win! Rock crushes Scissors!";
+                    gameDescription.textContent = "You win! Rock crushes Scissors!";
                     playerWin = true;
                     break;
                 case 'paper':
-                    message = "You lose! Paper envelopes Rock!";
+                    gameDescription.textContent = "You lose! Paper envelopes Rock!";
                     break;
                 case 'rock':
-                    message = "Tie! We both chose Rock!";
+                    gameDescription.textContent = "Tie! We both chose Rock!";
                     gameTie = true;
             }
             break;
@@ -42,14 +54,14 @@ function playGame() {
         case 'paper':
             switch (computerChoice) {
                 case 'scissors':
-                    message = "You lose! Scissors cut through Paper!";
+                    gameDescription.textContent = "You lose! Scissors cut through Paper!";
                     break;
                 case 'paper':
-                    message = "Tie! We both chose Paper.";
+                    gameDescription.textContent = "Tie! We both chose Paper.";
                     gameTie = true;
                     break;
                 case 'rock':
-                    message = "You win! Paper envelopes Rock!";
+                    gameDescription.textContent = "You win! Paper envelopes Rock!";
                     playerWin = true;
             }
             break;
@@ -57,43 +69,63 @@ function playGame() {
         case 'scissors':
             switch (computerChoice) {
                 case 'scissors':
-                    message = "Tie! We both chose Scissors.";
+                    gameDescription.textContent = "Tie! We both chose Scissors.";
                     gameTie = true;
                     break;
                 case 'paper':
-                    message = "You win! Scissors cut through Paper!";
+                    gameDescription.textContent = "You win! Scissors cut through Paper!";
                     playerWin = true;
                     break;
                 case 'rock':
-                    message = "You lose! Rock crushes Scissors!";
+                    gameDescription.textContent = "You lose! Rock crushes Scissors!";
             }
     }
-    return [message, playerWin, gameTie];
+    return [playerWin, gameTie];
 }
 
-function game(n) {
+function game(buttonChoice) {
 
-    let playerScore = 0;
-    let computerScore = 0;
-    console.log(`Playing Rock Paper Scissors ${n} times, and keeping score...`)
+    gameInfo = playGame(buttonChoice);
+    //Unpack gameInfo array
+    const playerWin = gameInfo[0];
+    const gameTie = gameInfo[1];
 
-    for (let i = 0; i < n; i++) {
-        //Play 1 game
-        gameInfo = playGame();
-        //Unpack gameInfo
-        const message = gameInfo[0];
-        const playerWin = gameInfo[1];
-        const gameTie = gameInfo[2];
-        //Print the results
-        console.log(message);
-        //Update scores
-        if (playerWin) {
-            playerScore++;
-        } else if (!gameTie) {
-            computerScore++;
-        }
+    //Update scores
+    if (playerWin) {
+        playerScore++;
+    } else if (!gameTie) {
+        computerScore++;
+    }
+    
+    console.log(playerScore);
+    console.log(computerScore);
+
+    if (playerScore === 5 || computerScore === 5) {
+        gameDescription.appendChild(resetButton);
+        resetButton.classList.add('resetButton');
+        resetButton.textContent = 'Reset Game';
+        resetButton.addEventListener('click', resetGame)
     }
 
-    console.log(`Out of ${n} plays, you won ${playerScore} of them. I won ${computerScore}. Thanks for playing!`);
+    if (playerScore === 5) {
+        playerScoreBoard.textContent = 'Holy shit, you won 5 games!'
+        playerScore = 0;
+        computerScore = 0;
+    } else if (computerScore === 5) {
+        computerScoreBoard.textContent = 'My binary brain destroyed you!'
+        playerScore = 0;
+        computerScore = 0;
+    } else {
+    playerScoreBoard.textContent = `Your score is ${playerScore}`;
+    computerScoreBoard.textContent= `My score is ${computerScore}`;
+    }
+}
 
+function resetGame() {
+    playerScore = 0;
+    computerScore = 0;
+    gameDescription.textContent = ``;
+    playerScoreBoard.textContent = `Your score is ${playerScore}`;
+    computerScoreBoard.textContent= `My score is ${computerScore}`;
+    hands.textContent = 'Choose a move, first to 5 wins!';
 }
